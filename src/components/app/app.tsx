@@ -20,18 +20,27 @@ import {
   OnlyAuth,
   OnlyUnAuth
 } from '@components';
-import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  useNavigate,
+  useLocation,
+  useParams
+} from 'react-router-dom';
 import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
 import { checkUserAuth } from '../../services/slices/user/actions';
 import { fetchIngredients } from '../../services/slices/ingredients/actions';
 import { resetOrderModalData } from '../../services/slices/orders/slice';
+import { getOrderNumber } from '../../utils/utils';
 
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
+  const orderNumber = getOrderNumber();
+
   const closeModal = () => {
     navigate(-1);
     dispatch(resetOrderModalData());
@@ -79,7 +88,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title={'Детали ингредиента'} onClose={closeModal}>
+              <Modal title='Детали ингредиента' onClose={closeModal}>
                 <IngredientDetails />
               </Modal>
             }
@@ -87,7 +96,7 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal title='Детали заказа' onClose={closeModal}>
+              <Modal title={`#${orderNumber}`} onClose={closeModal}>
                 <OrderInfo />
               </Modal>
             }
@@ -95,7 +104,7 @@ const App = () => {
           <Route
             path='/profile/orders/:number'
             element={
-              <Modal title='Детали заказа' onClose={closeModal}>
+              <Modal title={`#${orderNumber}`} onClose={closeModal}>
                 <OrderInfo />
               </Modal>
             }

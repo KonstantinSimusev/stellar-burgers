@@ -20,6 +20,7 @@ export const ordersSlice = createSlice({
     }
   },
   selectors: {
+    selectOrders: (state) => state.data,
     selectIsOrderLoading: (state) => state.isOrderLoading
   },
   extraReducers: (builder) => {
@@ -61,4 +62,4 @@ export const ordersSlice = createSlice({
 });
 
 export const { resetOrderModalData } = ordersSlice.actions;
-export const { selectIsOrderLoading } = ordersSlice.selectors;
+export const { selectIsOrderLoading, selectOrders } = ordersSlice.selectors;

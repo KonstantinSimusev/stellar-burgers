@@ -11,6 +11,7 @@ import { ingredientsSlice } from './slices/ingredients/slice';
 import { builderSlice } from './slices/builder/slice';
 import { feedsSlise } from './slices/feeds/slice';
 import { ordersSlice } from './slices/orders/slice';
+import { ordersMiddleware } from './middlewares/orders';
 
 const rootReducer = combineSlices(
   userSlice,
@@ -22,6 +23,8 @@ const rootReducer = combineSlices(
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(ordersMiddleware),
   devTools: process.env.NODE_ENV !== 'production'
 });
 

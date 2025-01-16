@@ -50,7 +50,7 @@ export const builderSlice = createSlice({
         state.builder.ingredients[action.payload.index + 1] = ingredient;
       }
     },
-    updateBuilder(state) {
+    resetConstructor(state) {
       state.builder.bun = null;
       state.builder.ingredients = [];
     }
@@ -65,7 +65,7 @@ export const {
   addIngredient,
   deleteIngredient,
   moveIngredient,
-  updateBuilder
+  resetConstructor
 } = builderSlice.actions;
 
 export const { selectBurgerBuilder } = builderSlice.selectors;
