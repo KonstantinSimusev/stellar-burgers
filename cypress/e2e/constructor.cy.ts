@@ -71,7 +71,7 @@ describe('Тест конструктора бургеров', () => {
       cy.get('[data-order-button]').should('be.enabled');
 
       // Нажатие на кнопку оформления заказа
-      cy.get('[data-order-button]').click({force: true});
+      cy.get('[data-order-button]').click({ force: true });
 
       // После успешной отправки данных на сервер должно быть открыто модальное окно с оформлением заказа
       cy.get('#modals').should('exist');
