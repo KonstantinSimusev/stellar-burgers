@@ -13,7 +13,7 @@ import { feedsSlise } from './slices/feeds/slice';
 import { ordersSlice } from './slices/orders/slice';
 import { ordersMiddleware } from './middlewares/orders';
 
-const rootReducer = combineSlices(
+export const rootReducer = combineSlices(
   userSlice,
   ingredientsSlice,
   builderSlice,
@@ -21,7 +21,7 @@ const rootReducer = combineSlices(
   ordersSlice
 ); // Заменить на импорт настоящего редьюсера
 
-const store = configureStore({
+export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(ordersMiddleware),

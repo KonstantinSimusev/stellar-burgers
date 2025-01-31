@@ -3,12 +3,12 @@ import { TOrdersState } from './type';
 import { createOrder, fetchOrder, fetchOrders } from './actions';
 
 export const initialState: TOrdersState = {
+  orders: [],
   isOrderLoading: false,
   isOrdersLoading: false,
   orderRequest: false,
   orderModalData: null,
-  error: null,
-  data: []
+  error: null
 };
 
 export const ordersSlice = createSlice({
@@ -20,11 +20,24 @@ export const ordersSlice = createSlice({
     }
   },
   selectors: {
-    selectOrders: (state) => state.data,
+    selectOrders: (state) => state.orders,
     selectIsOrderLoading: (state) => state.isOrderLoading
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchOrders.pending, (state) => {
+        state.isOrdersLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchOrders.fulfilled, (state, action) => {
+        state.isOrdersLoading = false;
+        state.error = null;
+        state.orders = action.payload;
+      })
+      .addCase(fetchOrders.rejected, (state, action) => {
+        state.isOrdersLoading = false;
+        state.error = action.error;
+      })
       .addCase(fetchOrder.pending, (state) => {
         state.isOrderLoading = true;
       })
@@ -34,19 +47,6 @@ export const ordersSlice = createSlice({
       })
       .addCase(fetchOrder.rejected, (state) => {
         state.isOrderLoading = false;
-      })
-      .addCase(fetchOrders.pending, (state) => {
-        state.isOrdersLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchOrders.fulfilled, (state, action) => {
-        state.isOrdersLoading = false;
-        state.error = null;
-        state.data = action.payload;
-      })
-      .addCase(fetchOrders.rejected, (state, action) => {
-        state.isOrdersLoading = false;
-        state.error = action.error;
       })
       .addCase(createOrder.pending, (state) => {
         state.orderRequest = true;

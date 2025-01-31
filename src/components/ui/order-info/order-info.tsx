@@ -22,7 +22,7 @@ export const OrderInfoUI: FC<OrderInfoUIProps> = memo(({ orderInfo }) => {
         <h3
           className={`text text_type_main-medium pb-3 pt-10 ${styles.header}`}
         >
-          {`#${orderNumber}`}
+          {`Заказ #${orderNumber}`}
         </h3>
       )}
       <h3 className={`text text_type_main-medium pb-3 pt-10 ${styles.header}`}>

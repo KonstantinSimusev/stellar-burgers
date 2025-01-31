@@ -8,7 +8,8 @@ export const initialState: TFeedsState = {
     total: NaN,
     totalToday: NaN
   },
-  isLoading: true
+  isLoading: true,
+  error: null
 };
 
 export const feedsSlise = createSlice({
@@ -23,13 +24,16 @@ export const feedsSlise = createSlice({
     builder
       .addCase(fetchFeeds.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(fetchFeeds.fulfilled, (state, action) => {
         state.feed = action.payload;
         state.isLoading = false;
+        state.error = null;
       })
-      .addCase(fetchFeeds.rejected, (state) => {
+      .addCase(fetchFeeds.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.error;
       });
   }
 });

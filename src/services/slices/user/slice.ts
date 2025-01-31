@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import {
+  fetchUser,
   fetchLoginUser,
   fetchLogoutUser,
   fetchRegisterUser,
@@ -36,6 +37,14 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.isAuthChecked = true;
+        state.user = action.payload;
+      })
+      .addCase(fetchUser.rejected, (state) => {
+        state.isAuthChecked = true;
+      })
       .addCase(fetchRegisterUser.pending, (state) => {
         state.isLoading = true;
         state.registerError = undefined;
