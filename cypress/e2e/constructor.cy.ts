@@ -1,80 +1,80 @@
 describe('Тест конструктора бургеров', () => {
+  const selectBun = '[data-cy="bun"]';
+  const selectMain = '[data-cy="main"]';
+  const selectSauce = '[data-cy="sauce"]';
+  const selectModal = '#modals';
+  const selectOrderButton = '[data-order-button]';
+  
   beforeEach(() => {
     // Перехват запросов на получение ингредиентов
-    cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients' });
+    cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients' }).as('getIngredients');
+    cy.intercept('GET', 'api/auth/user', { fixture: 'user' }).as('getAuthUser');
+    cy.intercept('POST', 'api/orders', { fixture: 'order' }).as('postOrders');
 
-    cy.visit('http://localhost:4000/');
+    cy.setCookie('accessToken', 'EXAMPLE_ACCESS_TOKEN');
+    localStorage.setItem('refreshToken', 'EXAMPLE_REFRESH_TOKEN');
+
+    cy.visit('/');
   });
 
   it('Список ингредиентов доступен для выбора', () => {
-    cy.get('[data-cy="bun"]').should('exist');
-    cy.get('[data-cy="main"],[data-cy="sauce"]').should('exist');
+    cy.get(selectBun).should('exist');
+    cy.get(selectMain).should('exist');
+    cy.get(selectSauce).should('exist');
   });
 
   describe('Проверка работы модальных окон описаний ингредиентов', () => {
     it('добавление ингредиентов в конструктор', () => {
       cy.get('button').contains('Добавить').click();
-      cy.get('[data-cy="bun"]').should('exist');
+      cy.get(selectBun).should('exist');
     });
 
     it('Открытие по карточке ингредиента', () => {
-      cy.get('[data-cy="bun"]:first-of-type').click();
-      cy.get('#modals').should('exist');
+      cy.get(selectBun).click();
+      cy.get(selectModal).should('exist');
     });
 
     it('Модальное окно с ингредиентом будет открыто после перезагрузки страницы', () => {
-      cy.get('[data-cy="bun"]:first-of-type').click();
+      cy.get(selectBun).click();
       cy.reload(true);
-      cy.get('#modals').should('exist');
+      cy.get(selectModal).should('exist');
     });
 
     describe('Проверка закрытия модальных окон', () => {
       it('Через нажатие на крестик', () => {
-        cy.get('[data-cy="bun"]:first-of-type').click();
-        cy.get('#modals').click({ force: true });
-        cy.get('#modals').children().should('have.length', 0);
+        cy.get(selectBun).click();
+        cy.get(selectModal).click({ force: true });
+        cy.get(selectModal).children().should('have.length', 0);
       });
 
       it('Через нажатие на оверлей', () => {
-        cy.get('[data-cy="bun"]:first-of-type').click();
-        cy.get('#modals').click({ force: true });
-        cy.get('#modals').children().should('have.length', 0);
+        cy.get(selectBun).click();
+        cy.get(selectModal).click({ force: true });
+        cy.get(selectModal).children().should('have.length', 0);
       });
 
       it('Через нажатие на Escape', () => {
-        cy.get('[data-cy="bun"]:first-of-type').click();
+        cy.get(selectBun).click();
         cy.get('body').type('{esc}');
-        cy.get('#modals').children().should('have.length', 0);
+        cy.get(selectModal).children().should('have.length', 0);
       });
     });
   });
 
   describe('Оформление заказа', () => {
-    beforeEach(() => {
-      // Перехват запросов авторизации, оформления заказа и получения ингредиентов
-      cy.intercept('GET', 'api/auth/user', { fixture: 'user' });
-      cy.intercept('POST', 'api/orders', { fixture: 'order' });
-      cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients' });
-      cy.visit('http://localhost:4000/');
-
-      // В localStorage и сookie подставляются фейковые токены авторизации
-      cy.setCookie('accessToken', 'EXAMPLE_ACCESS_TOKEN');
-      localStorage.setItem('refreshToken', 'EXAMPLE_REFRESH_TOKEN');
-    });
-
     it('Оформления заказа', () => {
       // Проверка работы конструктора, по умолчанию он отключен пока не будет выбрана хотя бы 1 ингредиент и булка
-      cy.get('[data-order-button]').should('be.disabled');
-      cy.get('[data-cy="bun"]:first-of-type button').click();
-      cy.get('[data-order-button]').should('be.disabled');
-      cy.get('[data-cy="main"] button').click();
-      cy.get('[data-order-button]').should('be.enabled');
+      cy.get(selectOrderButton).should('be.disabled');
+      cy.get(`${selectBun} button`).click();
+      cy.get(selectOrderButton).should('be.disabled');
+      cy.get(`${selectMain} button`).click();
+      cy.get(selectOrderButton).should('be.enabled');
 
       // Нажатие на кнопку оформления заказа
-      cy.get('[data-order-button]').click({ force: true });
+      cy.get(selectOrderButton).click({ force: true });
 
       // После успешной отправки данных на сервер должно быть открыто модальное окно с оформлением заказа
-      cy.get('#modals').should('exist');
+      cy.get(selectModal).should('exist');
     });
 
     afterEach(() => {
