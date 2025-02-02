@@ -1,14 +1,22 @@
 import React, { FC, memo } from 'react';
 import styles from './ingredient-details.module.css';
 import { IngredientDetailsUIProps } from './type';
+import { useLocation } from 'react-router-dom';
 
 export const IngredientDetailsUI: FC<IngredientDetailsUIProps> = memo(
   ({ ingredientData }) => {
     const { name, image_large, calories, proteins, fat, carbohydrates } =
       ingredientData;
+    const location = useLocation();
+    const backgroundLocation = location.state?.background;
 
     return (
       <div className={styles.content}>
+        {!backgroundLocation && (
+          <h3 className='text text_type_main-medium mt-10'>
+            Детали ингредиента
+          </h3>
+        )}
         <img
           className={styles.img}
           alt='изображение ингредиента.'
